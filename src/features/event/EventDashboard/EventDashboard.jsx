@@ -1,53 +1,54 @@
 import React, { Component } from 'react'
 import { Grid, Button } from 'semantic-ui-react'
+import cuid from 'cuid'
 import EventList from '../EventList/EventList'
 import EventFrom from '../EventFrom/EventFrom'
 
 const eventsDashboard = [
   {
     id: '1',
-    title: 'Trip to Tower of London',
+    title: 'Путишествие по Лондону',
     date: '2018-03-27T11:00:00+00:00',
-    category: 'culture',
+    category: 'культура',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'London, UK',
-    venue: "Tower of London, St Katharine's & Wapping, London",
-    hostedBy: 'Bob',
+    city: 'Лондон, Великобритания',
+    venue: "Лондонский Тауэр, Сент-Катарина и Ваппинг, Лондон",
+    hostedBy: 'Алекс',
     hostPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
     attendees: [
       {
         id: 'a',
-        name: 'Bob',
+        name: 'Алекс',
         photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
       },
       {
         id: 'b',
-        name: 'Tom',
+        name: 'Соер',
         photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
       }
     ]
   },
   {
     id: '2',
-    title: 'Trip to Punch and Judy Pub',
+    title: 'Поездка в Панч и Джуди Паб',
     date: '2018-03-28T14:00:00+00:00',
-    category: 'drinks',
+    category: 'напитки',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'London, UK',
-    venue: 'Punch & Judy, Henrietta Street, London, UK',
-    hostedBy: 'Tom',
+    city: 'Лондон, Великобритания',
+    venue: 'Пунч и Джуди, улица Генриетта, Лондон, Великобритания',
+    hostedBy: 'Соер',
     hostPhotoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
     attendees: [
       {
         id: 'b',
-        name: 'Tom',
+        name: 'Соер',
         photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
       },
       {
         id: 'a',
-        name: 'Bob',
+        name: 'Алекс',
         photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
       }
     ]
@@ -69,6 +70,16 @@ class EventDashboard extends Component {
     })
   }
 
+  handleCreateEvent = (newEvent) => {
+    newEvent.id = cuid();
+    newEvent.hostPhotoURL = '/assets/user.png';
+    const updatedEvents = [...this.state.events, newEvent];
+    this.setState({
+      events: updatedEvents,
+      isOpen: false
+    })
+  }
+
   handleCancel = () =>  {
     this.setState({
       isOpen: false
@@ -85,7 +96,7 @@ class EventDashboard extends Component {
             <Grid.Column  width={6}>
               <Button onClick={this.handleFormOpen} positive content="Создать Событие" />
               {this.state.isOpen && 
-               <EventFrom handleCancel={this.handleCancel} />}
+               <EventFrom createEvent={this.handleCreateEvent} handleCancel={this.handleCancel} />}
             </Grid.Column>
         </Grid>
       </div>
