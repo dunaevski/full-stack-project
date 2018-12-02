@@ -1,107 +1,147 @@
-import React, { Component } from 'react'
-import { Grid, Button } from 'semantic-ui-react'
-import cuid from 'cuid'
-import EventList from '../EventList/EventList'
-import EventFrom from '../EventFrom/EventFrom'
+import React, { Component } from "react";
+import { Grid, Button } from "semantic-ui-react";
+import cuid from "cuid";
+import EventList from "../EventList/EventList";
+import EventFrom from "../EventFrom/EventFrom";
 
 const eventsDashboard = [
   {
-    id: '1',
-    title: 'Путишествие по Лондону',
-    date: '2018-03-27T11:00:00+00:00',
-    category: 'культура',
+    id: "1",
+    title: "Путешествие по Лондону",
+    date: "2018-03-27",
+    category: "культура",
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'Лондон, Великобритания',
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
+    city: "Лондон, Великобритания",
     venue: "Лондонский Тауэр, Сент-Катарина и Ваппинг, Лондон",
-    hostedBy: 'Алекс',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
+    hostedBy: "Алекс",
+    hostPhotoURL: "https://randomuser.me/api/portraits/men/20.jpg",
     attendees: [
       {
-        id: 'a',
-        name: 'Алекс',
-        photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
+        id: "a",
+        name: "Алекс",
+        photoURL: "https://randomuser.me/api/portraits/men/20.jpg"
       },
       {
-        id: 'b',
-        name: 'Соер',
-        photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
+        id: "b",
+        name: "Соер",
+        photoURL: "https://randomuser.me/api/portraits/men/22.jpg"
       }
     ]
   },
   {
-    id: '2',
-    title: 'Поездка в Панч и Джуди Паб',
-    date: '2018-03-28T14:00:00+00:00',
-    category: 'напитки',
+    id: "2",
+    title: "Поездка в Панч и Джуди Паб",
+    date: "2018-03-28",
+    category: "напитки",
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
-    city: 'Лондон, Великобритания',
-    venue: 'Пунч и Джуди, улица Генриетта, Лондон, Великобритания',
-    hostedBy: 'Соер',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
+    city: "Лондон, Великобритания",
+    venue: "Пунч и Джуди, улица Генриетта, Лондон, Великобритания",
+    hostedBy: "Соер",
+    hostPhotoURL: "https://randomuser.me/api/portraits/men/22.jpg",
     attendees: [
       {
-        id: 'b',
-        name: 'Соер',
-        photoURL: 'https://randomuser.me/api/portraits/men/22.jpg'
+        id: "b",
+        name: "Соер",
+        photoURL: "https://randomuser.me/api/portraits/men/22.jpg"
       },
       {
-        id: 'a',
-        name: 'Алекс',
-        photoURL: 'https://randomuser.me/api/portraits/men/20.jpg'
+        id: "a",
+        name: "Алекс",
+        photoURL: "https://randomuser.me/api/portraits/men/20.jpg"
       }
     ]
   }
-]
-
+];
 
 class EventDashboard extends Component {
-
-
   state = {
     events: eventsDashboard,
-    isOpen: false 
-  }
- 
+    isOpen: false,
+    selectedEvent: null
+  };
+
   handleFormOpen = () => {
     this.setState({
+      selectedEvent: null,
       isOpen: true
-    })
-  }
+    });
+  };
 
-  handleCreateEvent = (newEvent) => {
+  handleCancel = () => {
+    this.setState({
+      isOpen: false
+    });
+  };
+
+  handleUpdateEvent = updatedEvent => {
+    this.setState({
+      events: this.state.events.map(event => {
+        if (event.id === updatedEvent.id)
+          return Object.assign({}, updatedEvent);
+        else return event;
+      }),
+      isOpen: false,
+      selectedEvent: null
+    });
+  };
+
+  handleOpenEvent = eventToOpen => () => {
+    this.setState({
+      selectedEvent: eventToOpen,
+      isOpen: true
+    });
+  };
+
+  handleCreateEvent = newEvent => {
     newEvent.id = cuid();
-    newEvent.hostPhotoURL = '/assets/user.png';
+    newEvent.hostPhotoURL = "/assets/user.png";
     const updatedEvents = [...this.state.events, newEvent];
     this.setState({
       events: updatedEvents,
       isOpen: false
-    })
-  }
+    });
+  };
 
-  handleCancel = () =>  {
+  handleDeleteEvent = eventId => () => {
+    const updatedEvents = this.state.events.filter(e => e.id !== eventId);
     this.setState({
-      isOpen: false
-    })
-  }
+      events: updatedEvents
+    });
+  };
 
   render() {
+    const { selectedEvent } = this.state;
     return (
       <div>
         <Grid>
-            <Grid.Column  width={10}>
-                <EventList events={this.state.events}/>
-            </Grid.Column>
-            <Grid.Column  width={6}>
-              <Button onClick={this.handleFormOpen} positive content="Создать Событие" />
-              {this.state.isOpen && 
-               <EventFrom createEvent={this.handleCreateEvent} handleCancel={this.handleCancel} />}
-            </Grid.Column>
+          <Grid.Column width={10}>
+            <EventList
+              deleteEvents={this.handleDeleteEvent}
+              onEventOpen={this.handleOpenEvent}
+              events={this.state.events}
+            />
+          </Grid.Column>
+          <Grid.Column width={6}>
+            <Button
+              onClick={this.handleFormOpen}
+              positive
+              content="Создать Событие"
+            />
+            {this.state.isOpen && (
+              <EventFrom
+                updateEvent={this.handleUpdateEvent}
+                selectedEvent={selectedEvent}
+                createEvent={this.handleCreateEvent}
+                handleCancel={this.handleCancel}
+              />
+            )}
+          </Grid.Column>
         </Grid>
       </div>
-    )
+    );
   }
 }
 
-export default EventDashboard
+export default EventDashboard;

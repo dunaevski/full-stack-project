@@ -1,45 +1,59 @@
-import React, { Component } from 'react'
-import {Segment, Item, Icon, List, Button} from 'semantic-ui-react'
-import EventListAttendee from './EventListAttendee'
+import React, { Component } from "react";
+import { Segment, Item, Icon, List, Button } from "semantic-ui-react";
+import EventListAttendee from "./EventListAttendee";
 
 class EventListItem extends Component {
   render() {
-      const {event} = this.props;
+    const { event, onEventOpen, deleteEvents } = this.props;
     return (
-        <Segment.Group>
+      <Segment.Group>
         <Segment>
-            <Item.Group>
+          <Item.Group>
             <Item>
-                <Item.Image size="tiny" circular src={event.hostPhotoURL} />
-                <Item.Content>
+              <Item.Image size="tiny" circular src={event.hostPhotoURL} />
+              <Item.Content>
                 <Item.Header as="a">{event.title}</Item.Header>
                 <Item.Description>
-                    Опубликованно <a>{event.hostedBy}</a>
+                  Опубликованно <a>{event.hostedBy}</a>
                 </Item.Description>
-                </Item.Content>
+              </Item.Content>
             </Item>
-            </Item.Group>
+          </Item.Group>
         </Segment>
         <Segment>
-            <span>
+          <span>
             <Icon name="clock" /> {event.date} |
             <Icon name="marker" /> {event.venue}
-            </span>
+          </span>
         </Segment>
         <Segment secondary>
-            <List horizontal>
-            {event.attendees && event.attendees.map((attendee) => (
-                <EventListAttendee key={attendee.id} attendee={attendee}/>
-            ))}
-            </List>
+          <List horizontal>
+            {event.attendees &&
+              event.attendees.map(attendee => (
+                <EventListAttendee key={attendee.id} attendee={attendee} />
+              ))}
+          </List>
         </Segment>
         <Segment clearing>
-        <span>{event.description}</span>
-            <Button as="a" color="teal" floated="right" content="Далее" />
+          <span>{event.description}</span>
+          <Button
+            onClick={deleteEvents(event.id)}
+            as="a"
+            color="red"
+            floated="right"
+            content="Удалить"
+          />
+          <Button
+            onClick={onEventOpen(event)}
+            as="a"
+            color="teal"
+            floated="right"
+            content="Далее"
+          />
         </Segment>
-        </Segment.Group>
-    )
+      </Segment.Group>
+    );
   }
 }
 
-export default EventListItem 
+export default EventListItem;
