@@ -4,13 +4,13 @@ import EventListAttendee from "./EventListAttendee";
 
 class EventListItem extends Component {
   render() {
-    const { event, onEventOpen, deleteEvents } = this.props;
+    const { event, onEventOpen, deleteEvents } = this.props; // Получем данные из копмонента через props
     return (
       <Segment.Group>
         <Segment>
           <Item.Group>
             <Item>
-              <Item.Image size="tiny" circular src={event.hostPhotoURL} />
+              <Item.Image size="tiny" circular src={event.hostPhotoURL} /> 
               <Item.Content>
                 <Item.Header as="a">{event.title}</Item.Header>
                 <Item.Description>
@@ -37,14 +37,14 @@ class EventListItem extends Component {
         <Segment clearing>
           <span>{event.description}</span>
           <Button
-            onClick={deleteEvents(event.id)}
+            onClick={deleteEvents(event.id)} // Вызов функции по кнопке и передача ID
             as="a"
             color="red"
             floated="right"
             content="Удалить"
           />
           <Button
-            onClick={onEventOpen(event)}
+            onClick={onEventOpen(event)} // Вызов функции по кнопке и передача всех данных 
             as="a"
             color="teal"
             floated="right"

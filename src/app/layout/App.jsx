@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Container } from 'semantic-ui-react'
-import EventDashboard from '../../features/event/EventDashboard/EventDashboard'
-import NavBar from '../../features/nav/NavBar/NavBar'
+import { Container } from 'semantic-ui-react' // Добавление элемента с semantic-ui-reac
+import EventDashboard from '../../features/event/EventDashboard/EventDashboard' // Доавление компонента 
+import NavBar from '../../features/nav/NavBar/NavBar' // Доавление компонента 
 
 
 

@@ -3,9 +3,10 @@ import EventListItem from "./EventListItem";
 
 class EventList extends Component {
   render() {
-    const { events, onEventOpen, deleteEvents } = this.props;
+    const { events, onEventOpen, deleteEvents } = this.props; // Получаем данные из компонента через props
     return (
       <div>
+        {/* Передаём все данные из State через map  */}
         {events.map(event => (
           <EventListItem
             key={event.id}

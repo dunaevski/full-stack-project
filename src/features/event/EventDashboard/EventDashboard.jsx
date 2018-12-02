@@ -1,9 +1,20 @@
-import React, { Component } from "react";
-import { Grid, Button } from "semantic-ui-react";
-import cuid from "cuid";
-import EventList from "../EventList/EventList";
-import EventFrom from "../EventFrom/EventFrom";
+import React, { Component } from "react"; // Добовление React
+import { Grid, Button } from "semantic-ui-react"; // Добовление элементов из semantic-ui-react
+import cuid from "cuid"; // Добовление пакета cuid для генрации ID
+import EventList from "../EventList/EventList"; // Добовление комппонента EventList
+import EventForm from "../EventFrom/EventForm"; // Добовление комппонента EventFrom
 
+// // раньше
+// var sum = function() {
+//   return [].reduce.call(arguments, function(m, n) {
+//     return m + n;
+//   }, 0);
+// }
+
+// // сейчас
+// var sum = (...args) => args.reduce((m, n) => m + n, 0);
+
+// События
 const eventsDashboard = [
   {
     id: "1",
@@ -57,81 +68,95 @@ const eventsDashboard = [
 
 class EventDashboard extends Component {
   state = {
-    events: eventsDashboard,
-    isOpen: false,
-    selectedEvent: null
+    events: eventsDashboard, // Добавление в State событий
+    isOpen: false, // Добавляем в State перекулючатель открытия и закрытия EventForm
+    selectedEvent: null // Добавляем в State переменную в которую потом можно будет добовлять событие
   };
 
+  // Метод отрытия EventForm
   handleFormOpen = () => {
     this.setState({
+      // Изменение State при помощи setState
       selectedEvent: null,
       isOpen: true
     });
   };
 
+  // Метод закрытия EventForm
   handleCancel = () => {
     this.setState({
       isOpen: false
     });
   };
 
+  // Метод для изменения события в EvenList через EventForm
   handleUpdateEvent = updatedEvent => {
+    // Передаём обновлённый объект события из EventForm
     this.setState({
       events: this.state.events.map(event => {
+        // Получаем через функцию map событие
         if (event.id === updatedEvent.id)
+          // Если id одинаковые
           return Object.assign({}, updatedEvent);
-        else return event;
+        // то копируем все значение через Object.assign в обновленное событие в EvenList
+        else return event; // Если не одинаковые, возварщаем текущее событие
       }),
-      isOpen: false,
-      selectedEvent: null
+      isOpen: false, // Закрываем EventFrom
+      selectedEvent: null // Обнуляем выбраное событие
     });
   };
 
+  // Метод для добавления в EventFrom значений из выбраного события
   handleOpenEvent = eventToOpen => () => {
+    // Передаём событие в метод
     this.setState({
-      selectedEvent: eventToOpen,
-      isOpen: true
+      selectedEvent: eventToOpen, // Добавление в State переданное событие
+      isOpen: true // Открываем EventFrom
     });
   };
 
+  // Метод для создания события
   handleCreateEvent = newEvent => {
-    newEvent.id = cuid();
+    // Передаём новое событие из EventForm
+    newEvent.id = cuid(); // Генерируем ID
     newEvent.hostPhotoURL = "/assets/user.png";
-    const updatedEvents = [...this.state.events, newEvent];
+    const updatedEvents = [...this.state.events, newEvent]; // Создание нового события ...this.state.events - данные с EventForm, newEvent - id
     this.setState({
-      events: updatedEvents,
+      events: updatedEvents, // Добавление новое событие в  State
       isOpen: false
     });
   };
 
+  // Удаление события из EventList
   handleDeleteEvent = eventId => () => {
-    const updatedEvents = this.state.events.filter(e => e.id !== eventId);
+    // Передаём значение ID из EventList
+    const updatedEvents = this.state.events.filter(e => e.id !== eventId); // Делаем проверку события, чтобы ID не были равными
     this.setState({
       events: updatedEvents
     });
   };
 
   render() {
-    const { selectedEvent } = this.state;
+    const { selectedEvent } = this.state; 
     return (
       <div>
         <Grid>
           <Grid.Column width={10}>
             <EventList
-              deleteEvents={this.handleDeleteEvent}
+              deleteEvents={this.handleDeleteEvent} // Передаём метод в компонент 
               onEventOpen={this.handleOpenEvent}
-              events={this.state.events}
+              events={this.state.events} // Передаём события из State
             />
           </Grid.Column>
           <Grid.Column width={6}>
             <Button
-              onClick={this.handleFormOpen}
+              onClick={this.handleFormOpen} // По клику вызов функции handleFormOpen
               positive
               content="Создать Событие"
             />
             {this.state.isOpen && (
-              <EventFrom
-                updateEvent={this.handleUpdateEvent}
+              <EventForm
+                updateEvent={this.handleUpdateEvent} // Передаём метод в компонент 
                 selectedEvent={selectedEvent}
                 createEvent={this.handleCreateEvent}
                 handleCancel={this.handleCancel}
