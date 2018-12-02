@@ -137,13 +137,13 @@ class EventDashboard extends Component {
   };
 
   render() {
-    const { selectedEvent } = this.state; 
+    const { selectedEvent } = this.state;
     return (
       <div>
         <Grid>
           <Grid.Column width={10}>
             <EventList
-              deleteEvents={this.handleDeleteEvent} // Передаём метод в компонент 
+              deleteEvents={this.handleDeleteEvent} // Передаём метод в компонент
               onEventOpen={this.handleOpenEvent}
               events={this.state.events} // Передаём события из State
             />
@@ -156,7 +156,7 @@ class EventDashboard extends Component {
             />
             {this.state.isOpen && (
               <EventForm
-                updateEvent={this.handleUpdateEvent} // Передаём метод в компонент 
+                updateEvent={this.handleUpdateEvent} // Передаём метод в компонент
                 selectedEvent={selectedEvent}
                 createEvent={this.handleCreateEvent}
                 handleCancel={this.handleCancel}
