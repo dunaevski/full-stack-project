@@ -48,7 +48,7 @@ class EventListItem extends Component {
             as="a"
             color="teal"
             floated="right"
-            content="Далее"
+            content="Изменить"
           />
         </Segment>
       </Segment.Group>
