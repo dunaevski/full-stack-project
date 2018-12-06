@@ -14,7 +14,7 @@ const SettingsNav = () => {
             color="grey"
             content="Профиль"
           />
-          <Menu.Item as={NavLink} to='/settings/basic'>Basics</Menu.Item>
+          <Menu.Item as={NavLink} to='/settings/basic'>Основное</Menu.Item>
           <Menu.Item as={NavLink} to='/settings/about'>Обо Мне</Menu.Item>
           <Menu.Item as={NavLink} to='/settings/photos'>Мои Фото</Menu.Item>
         </Menu>
@@ -27,7 +27,7 @@ const SettingsNav = () => {
             color="grey"
             content="Аккаунт"
           />
-          <Menu.Item as={NavLink} to='/settings/account'>Моя Аккаунт</Menu.Item>
+          <Menu.Item as={NavLink} to='/settings/account'>Мой Аккаунт</Menu.Item>
         </Menu>
       </Grid.Column>
     </div>
