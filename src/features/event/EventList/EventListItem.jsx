@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Segment, Item, Icon, List, Button } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import EventListAttendee from "./EventListAttendee";
 
 class EventListItem extends Component {
   render() {
-    const { event, onEventOpen, deleteEvents } = this.props; // Получем данные из копмонента через props
+    const { event, deleteEvents } = this.props; // Получем данные из копмонента через props
     return (
       <Segment.Group>
         <Segment>
@@ -44,11 +45,11 @@ class EventListItem extends Component {
             content="Удалить"
           />
           <Button
-            onClick={onEventOpen(event)} // Вызов функции по кнопке и передача всех данных
-            as="a"
+            as={Link}
+            to={`/event/${event.id}`}
             color="teal"
             floated="right"
-            content="Изменить"
+            content="Далее"
           />
         </Segment>
       </Segment.Group>
