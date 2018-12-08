@@ -49,7 +49,7 @@ class EventListItem extends Component {
             to={`/event/${event.id}`}
             color="teal"
             floated="right"
-            content="Далее"
+            content="Просмотр"
           />
         </Segment>
       </Segment.Group>

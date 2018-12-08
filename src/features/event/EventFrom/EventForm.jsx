@@ -1,26 +1,32 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { reduxForm, Field } from "redux-form";
+import moment from 'moment'
+import {
+  composeValidators,
+  combineValidators,
+  isRequired,
+  hasLengthGreaterThan
+} from "revalidate";
 import cuid from "cuid";
-import { Segment, Form, Button } from "semantic-ui-react";
+import { Segment, Form, Button, Header, Grid } from "semantic-ui-react";
 import { createEvent, updateEvent } from "../eventActions";
+import TextInput from "../../../app/common/form/TextInput";
+import TextArea from "../../../app/common/form/TextArea";
+import SelectInput from "../../../app/common/form/SelectInput";
+import DateInput from "../../../app/common/form/DateInput";
 
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
 
-  let event = {
-    title: "",
-    date: "",
-    city: "",
-    venue: "",
-    hostedBy: ""
-  };
+  let event = {};
 
   if (eventId && state.events.length > 0) {
     event = state.events.filter(event => event.id === eventId)[0];
   }
 
   return {
-    event
+    initialValues: event
   };
 };
 
@@ -29,94 +35,116 @@ const actions = {
   updateEvent
 };
 
-class EventFrom extends Component {
-  state = {
-    event: Object.assign({}, this.props.event)
-  };
+const category = [
+  { key: "drinks", text: "Напитки", value: "drinks" },
+  { key: "culture", text: "Культура", value: "culture" },
+  { key: "film", text: "Фильмы", value: "film" },
+  { key: "food", text: "Еда", value: "food" },
+  { key: "music", text: "Музыка", value: "music" },
+  { key: "travel", text: "Путишествие", value: "travel" }
+];
 
-  onFormSubmit = evt => {
-    evt.preventDefault();
-    if (this.state.event.id) {
-      this.props.updateEvent(this.state.event);
+const validate = combineValidators({
+  title: isRequired({ message: "Нзавание события обязательно" }),
+  category: isRequired({ message: "Пожалуйста, выберете категорию" }),
+  description: composeValidators(
+    isRequired({ message: "Пожалуйста, введите описание" }),
+    hasLengthGreaterThan(4)({
+      message: "Описание должно быть минимум 5 знаков"
+    })
+  )(),
+  city: isRequired({ message: "Город обязательное поле" }),
+  venue: isRequired({ message: "Место обязательное поле" }),
+  date: isRequired({ message: "Дата обязательное поле" })
+});
+
+class EventForm extends Component {
+  onFormSubmit = values => {
+    values.date = moment(values.date).format()
+    if (this.props.initialValues.id) {
+      this.props.updateEvent(values);
       this.props.history.goBack();
     } else {
       const newEvent = {
-        ...this.state.event,
+        ...values,
         id: cuid(),
-        hostPhotoURL: "/assets/user.png"
+        hostPhotoURL: "/assets/user.png",
+        hostedBy: "Катя"
       };
       this.props.createEvent(newEvent);
       this.props.history.push("/events");
     }
   };
 
-  onInputChange = evt => {
-    const newEvent = this.state.event;
-    newEvent[evt.target.name] = evt.target.value;
-    this.setState({
-      event: newEvent
-    });
-  };
-
   render() {
-    const { event } = this.state;
+    const { invalid, submitting, pristine } = this.props;
     return (
-      <Segment>
-        <Form onSubmit={this.onFormSubmit}>
-          <Form.Field>
-            <label>Название События</label>
-            <input
-              name="title"
-              onChange={this.onInputChange}
-              value={event.title}
-              placeholder="Имя"
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Дата</label>
-            <input
-              name="date"
-              onChange={this.onInputChange}
-              value={event.date}
-              type="date"
-              placeholder="Дата События"
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Город</label>
-            <input
-              name="city"
-              onChange={this.onInputChange}
-              value={event.city}
-              placeholder="Город проведения события"
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Место</label>
-            <input
-              name="venue"
-              onChange={this.onInputChange}
-              value={event.venue}
-              placeholder="Введите место события"
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Организатор</label>
-            <input
-              name="hostedBy"
-              onChange={this.onInputChange}
-              value={event.hostedBy}
-              placeholder="Введите имя организатора"
-            />
-          </Form.Field>
-          <Button positive type="submit">
-            Подтвердить
-          </Button>
-          <Button onClick={this.props.history.goBack} type="button" negative>
-            Отмена
-          </Button>
-        </Form>
-      </Segment>
+      <Grid>
+        <Grid.Column width={10}>
+          <Segment>
+            <Header sub color="teal" content="Описание События" />
+            <Form onSubmit={this.props.handleSubmit(this.onFormSubmit)}>
+              <Field
+                name="title"
+                type="text"
+                component={TextInput}
+                placeholder="Название события"
+              />
+              <Field
+                name="category"
+                type="text"
+                component={SelectInput}
+                // multiple={true}
+                options={category}
+                placeholder="О чём ваше событие (категория)"
+              />
+              <Field
+                name="description"
+                type="text"
+                rows={3}
+                component={TextArea}
+                placeholder="Раскажите нам о вашем событии"
+              />
+              <Header sub color="teal" content="Описание Проведения События" />
+              <Field
+                name="city"
+                type="text"
+                component={TextInput}
+                placeholder="Город"
+              />
+              <Field
+                name="venue"
+                type="text"
+                component={TextInput}
+                placeholder="Место"
+              />
+              <Field
+                name="date"
+                type="text"
+                component={DateInput}
+                dateFormat="YYYY-MM-DD HH:mm"
+                timeFormat="HH:mm"
+                showTimeSelect
+                placeholder="Дата"
+              />
+              <Button
+                disabled={invalid || submitting || pristine}
+                positive
+                type="submit"
+              >
+                Подтвердить
+              </Button>
+              <Button
+                onClick={this.props.history.goBack}
+                type="button"
+                negative
+              >
+                Отмена
+              </Button>
+            </Form>
+          </Segment>
+        </Grid.Column>
+      </Grid>
     );
   }
 }
@@ -124,4 +152,8 @@ class EventFrom extends Component {
 export default connect(
   mapState,
   actions
-)(EventFrom);
+)(
+  reduxForm({ form: "eventForm", enableReinitialize: true, validate })(
+    EventForm
+  )
+);
