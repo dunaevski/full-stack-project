@@ -3,7 +3,7 @@ import { connect } from "react-redux"; // Добовляем connect Redux
 import { Grid } from "semantic-ui-react"; // Добовление элементов из semantic-ui-react
 import EventList from "../EventList/EventList"; // Добовление комппонента EventList
 import { deleteEvent } from "../eventActions";
-
+import LoadingComonent from "../../../app/layout/LoadingComonent";
 // // раньше
 // var sum = function() {
 //   return [].reduce.call(arguments, function(m, n) {
@@ -15,7 +15,8 @@ import { deleteEvent } from "../eventActions";
 // var sum = (...args) => args.reduce((m, n) => m + n, 0);
 
 const mapState = state => ({
-  events: state.events
+  events: state.events,
+  loading: state.async.loading
 });
 
 const actions = {
@@ -30,7 +31,8 @@ class EventDashboard extends Component {
   };
 
   render() {
-    const { events } = this.props;
+    const { events, loading } = this.props;
+    if (loading) return <LoadingComonent inverted={false}/>;
     return (
       <div>
         <Grid>
