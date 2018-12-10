@@ -19,16 +19,16 @@ const mapState = (state, ownProps) => {
   };
 };
 
-const EventDetailedPage = ({event}) => {
+const EventDetailedPage = ({ event }) => {
   return (
     <div>
       <Grid>
-        <Grid.Column width={10}>
+        <Grid.Column width={11}>
           <EventDetailedHeader event={event} />
           <EventDetailedInfo event={event} />
           <EventDetailedChats />
         </Grid.Column>
-        <Grid.Column width={6}>
+        <Grid.Column width={5}>
           <EventDetailedSidebar attendees={event.attendees} />
         </Grid.Column>
       </Grid>

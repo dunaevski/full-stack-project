@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "cuid": "^2.1.1",
     "date-fns": "^1.29.0",
     "firebase": "^4.12.1",
@@ -32,7 +33,8 @@
     "redux-thunk": "^2.2.0",
     "revalidate": "^1.2.0",
     "semantic-ui-css": "2.2.14",
-    "semantic-ui-react": "^0.79.0"
+    "semantic-ui-react": "^0.79.0",
+    "yandex-map-react": "^1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

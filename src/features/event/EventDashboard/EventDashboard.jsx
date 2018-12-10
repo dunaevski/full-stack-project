@@ -28,6 +28,7 @@ class EventDashboard extends Component {
     //Redux удаление
     this.props.deleteEvent(eventId);
   };
+
   render() {
     const { events } = this.props;
     return (

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
-import moment from 'moment'
+import axios from "axios";
+import moment from "moment";
 import {
   composeValidators,
   combineValidators,
@@ -15,6 +16,7 @@ import TextInput from "../../../app/common/form/TextInput";
 import TextArea from "../../../app/common/form/TextArea";
 import SelectInput from "../../../app/common/form/SelectInput";
 import DateInput from "../../../app/common/form/DateInput";
+import PlaceInput from "../../../app/common/form/PlaceInput";
 
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
@@ -59,8 +61,82 @@ const validate = combineValidators({
 });
 
 class EventForm extends Component {
+  state = {
+    resultCity: [{ text: "Ничего не найдено", value: "", key: "uniq" }],
+    resultVenue: [{ text: "Ничего не найдено", value: "", key: "uniq" }],
+    venueLatLng: {},
+    cityLatLng: {}
+  };
+
+  handlerGetCity = e => {
+    axios
+      .get(
+        "https://geocode-maps.yandex.ru/1.x/?format=json&geocode=" +
+          e.target.value
+      )
+      .then(response => {
+        let data = [];
+        response.data.response.GeoObjectCollection.featureMember.forEach(
+          (item, index) => {
+            data.push({
+              text: [item.GeoObject.name, ", ", item.GeoObject.description],
+              value: item.GeoObject.name,
+              key: index
+            });
+          }
+        );
+        this.setState({
+          resultCity: data
+        });
+      })
+      .then(() => {
+        this.props.change("city", this.state.resultCity[0]);
+      });
+  };
+
+  handlerGetVenue = e => {
+    axios
+      .get(
+        "https://search-maps.yandex.ru/v1/?text=" +
+          e.target.value +
+          "," +
+          this.state.resultCity[0].value +
+          "&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7"
+      )
+      .then(response => {
+        let data = [];
+        response.data.features.forEach((item, index) => {
+          data.push({
+            text: [item.properties.name, ", ", item.properties.description],
+            value: [
+              item.properties.name,
+              item.properties.description
+            ].toString(),
+            key: index
+          });
+          this.setState({
+            venueLatLng: item.geometry.coordinates
+          });
+        });
+        this.setState({
+          resultVenue: data
+        });
+      })
+      .then(() => {
+        const latLng = {
+          lat: this.state.venueLatLng[1],
+          lng: this.state.venueLatLng[0]
+        };
+        this.setState({
+          venueLatLng: latLng
+        });
+        this.props.change("venue", this.state.resultVenue);
+      });
+  };
+
   onFormSubmit = values => {
-    values.date = moment(values.date).format()
+    values.date = moment(values.date).format();
+    values.venueLatLng = this.state.venueLatLng;
     if (this.props.initialValues.id) {
       this.props.updateEvent(values);
       this.props.history.goBack();
@@ -109,15 +185,23 @@ class EventForm extends Component {
               <Field
                 name="city"
                 type="text"
-                component={TextInput}
+                value
+                component={PlaceInput}
+                options={this.state.resultCity}
                 placeholder="Город"
+                onSearchChange={this.handlerGetCity}
               />
+
               <Field
                 name="venue"
                 type="text"
-                component={TextInput}
+                value="value"
+                component={PlaceInput}
+                options={this.state.resultVenue}
                 placeholder="Место"
+                onSearchChange={this.handlerGetVenue}
               />
+
               <Field
                 name="date"
                 type="text"
