@@ -1,3 +1,4 @@
+import { toastr } from "react-redux-toastr";
 import {
   CREATE_EVENT,
   UPDATE_EVENT,
@@ -19,19 +20,33 @@ export const fetchEvent = events => {
 };
 
 export const createEvent = event => {
-  return {
-    type: CREATE_EVENT,
-    payload: {
-      event
+  return async dispatch => {
+    try {
+      dispatch({
+        type: CREATE_EVENT,
+        payload: {
+          event
+        }
+      });
+      toastr.success("Успех!", "Событие создано 👍");
+    } catch (error) {
+      toastr.error("Упс...", "Что-то пошло не так 😌");
     }
   };
 };
 
 export const updateEvent = event => {
-  return {
-    type: UPDATE_EVENT,
-    payload: {
-      event
+  return async dispatch => {
+    try {
+      dispatch({
+        type: UPDATE_EVENT,
+        payload: {
+          event
+        }
+      });
+      toastr.success("Успех!", "Событие изменено 👍");
+    } catch (error) {
+      toastr.error("Упс...", "Что-то пошло не так 😌");
     }
   };
 };

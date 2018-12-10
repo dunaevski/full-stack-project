@@ -5,7 +5,9 @@ const PlaceInput = ({
   onSearchChange,
   input: { onChange },
   options,
+  defaultValue,
   placeholder,
+  noResultsMessage,
   meta: { touched, error }
 }) => {
   return (
@@ -16,6 +18,8 @@ const PlaceInput = ({
         fluid
         onSearchChange={onSearchChange}
         onChange={(param, data) => onChange(data.value)}
+        defaultValue={defaultValue}
+        noResultsMessage={noResultsMessage}
         placeholder={placeholder}
         options={options}
       />

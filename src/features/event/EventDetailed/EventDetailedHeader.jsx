@@ -1,5 +1,7 @@
 import React from "react";
 import { Segment, Image, Item, Header, Button } from "semantic-ui-react";
+import format from "date-fns/format";
+import ru from "date-fns/locale/ru";
 import { Link } from "react-router-dom";
 
 const eventImageStyle = {
@@ -34,7 +36,7 @@ const EventDetailedHeader = ({ event }) => {
                   content={event.title}
                   style={{ color: "white" }}
                 />
-                <p>{event.date}</p>
+                <p>{format(event.date, "ddd DD MMM YYYY", { locale: ru })}</p>
                 <p>
                   Организатор: <strong>{event.hostedBy}</strong>
                 </p>
@@ -48,7 +50,12 @@ const EventDetailedHeader = ({ event }) => {
         <Button>Отменить</Button>
         <Button color="teal">ПРИСОЕДИНИТЬСЯ К СОБЫТИЮ</Button>
 
-        <Button as={Link} to={`/manage/${event.id}`} color="orange" floated="right">
+        <Button
+          as={Link}
+          to={`/manage/${event.id}`}
+          color="orange"
+          floated="right"
+        >
           Управление
         </Button>
       </Segment>

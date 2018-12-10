@@ -3,7 +3,7 @@ const sampleData = {
         {
             id: "1",
             title: "Путешествие по Лондону",
-            date: "2018-03-27",
+            date: "2018-03-27T18:00:00",
             category: "culture",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
             city: "Лондон, Великобритания",
@@ -29,7 +29,7 @@ const sampleData = {
         {
             id: "2",
             title: "Поездка в Панч и Джуди Паб",
-            date: "2018-03-28",
+            date: "2018-03-28T14:00:00",
             category: "drinks",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
             city: "Лондон, Великобритания",

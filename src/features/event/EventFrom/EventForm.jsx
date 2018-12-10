@@ -62,8 +62,20 @@ const validate = combineValidators({
 
 class EventForm extends Component {
   state = {
-    resultCity: [{ text: "Ничего не найдено", value: "", key: "uniq" }],
-    resultVenue: [{ text: "Ничего не найдено", value: "", key: "uniq" }],
+    resultCity: [
+      {
+        text: this.props.initialValues.city || "Не найдено 😌",
+        value: this.props.initialValues.city || "",
+        key: "c"
+      }
+    ],
+    resultVenue: [
+      {
+        text: this.props.initialValues.venue || "Не найдено 😌",
+        value: this.props.initialValues.venue,
+        key: "v"
+      }
+    ],
     venueLatLng: {},
     cityLatLng: {}
   };
@@ -79,8 +91,8 @@ class EventForm extends Component {
         response.data.response.GeoObjectCollection.featureMember.forEach(
           (item, index) => {
             data.push({
-              text: [item.GeoObject.name, ", ", item.GeoObject.description],
-              value: item.GeoObject.name,
+              text: item.GeoObject.metaDataProperty.GeocoderMetaData.text,
+              value: item.GeoObject.metaDataProperty.GeocoderMetaData.text,
               key: index
             });
           }
@@ -154,6 +166,7 @@ class EventForm extends Component {
 
   render() {
     const { invalid, submitting, pristine } = this.props;
+
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -170,7 +183,6 @@ class EventForm extends Component {
                 name="category"
                 type="text"
                 component={SelectInput}
-                // multiple={true}
                 options={category}
                 placeholder="О чём ваше событие (категория)"
               />
@@ -185,20 +197,22 @@ class EventForm extends Component {
               <Field
                 name="city"
                 type="text"
-                value
                 component={PlaceInput}
-                options={this.state.resultCity}
                 placeholder="Город"
+                options={this.state.resultCity}
+                defaultValue={this.props.initialValues.city}
+                noResultsMessage="Ничего не найдено 😌"
                 onSearchChange={this.handlerGetCity}
               />
 
               <Field
                 name="venue"
                 type="text"
-                value="value"
                 component={PlaceInput}
-                options={this.state.resultVenue}
                 placeholder="Место"
+                options={this.state.resultVenue}
+                defaultValue={this.props.initialValues.venue}
+                noResultsMessage="Ничего не найдено 😌"
                 onSearchChange={this.handlerGetVenue}
               />
 

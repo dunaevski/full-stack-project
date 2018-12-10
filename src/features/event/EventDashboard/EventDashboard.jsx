@@ -4,6 +4,7 @@ import { Grid } from "semantic-ui-react"; // Добовление элемент
 import EventList from "../EventList/EventList"; // Добовление комппонента EventList
 import { deleteEvent } from "../eventActions";
 import LoadingComonent from "../../../app/layout/LoadingComonent";
+import EventActivity from "../EventActivity/EventActivity";
 // // раньше
 // var sum = function() {
 //   return [].reduce.call(arguments, function(m, n) {
@@ -32,17 +33,19 @@ class EventDashboard extends Component {
 
   render() {
     const { events, loading } = this.props;
-    if (loading) return <LoadingComonent inverted={false}/>;
+    if (loading) return <LoadingComonent inverted={false} />;
     return (
       <div>
         <Grid>
-          <Grid.Column width={10}>
+          <Grid.Column width={11}>
             <EventList
               deleteEvents={this.handleDeleteEvent} // Передаём метод в компонент
               events={events} // Передаём события из State
             />
           </Grid.Column>
-          <Grid.Column width={6} />
+          <Grid.Column width={5}>
+            <EventActivity />
+          </Grid.Column>
         </Grid>
       </div>
     );
