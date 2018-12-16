@@ -1,18 +1,38 @@
 import React from "react";
-import { Form, Segment, Button } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { combineValidators, isRequired } from "revalidate";
+import { Form, Segment, Button, Label, Divider } from "semantic-ui-react";
 import { Field, reduxForm } from "redux-form";
-import TextInput from '../../../app/common/form/TextInput';
+import TextInput from "../../../app/common/form/TextInput";
+import { registerUser } from "../authActions";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
-const RegisterForm = () => {
+const actions = {
+  registerUser
+};
+
+const validate = combineValidators({
+  displayName: isRequired({ message: "Имя обязательно" }),
+  email: isRequired({ message: "Email обязателен" }),
+  password: isRequired({ message: "Пароль обязателен" })
+});
+
+const RegisterForm = ({
+  handleSubmit,
+  registerUser,
+  error,
+  invalid,
+  submitting
+}) => {
   return (
     <div>
-      <Form size="large">
+      <Form size="large" onSubmit={handleSubmit(registerUser)}>
         <Segment>
           <Field
             name="displayName"
             type="text"
             component={TextInput}
-            placeholder="Логин"
+            placeholder="Имя"
           />
           <Field
             name="email"
@@ -26,13 +46,28 @@ const RegisterForm = () => {
             component={TextInput}
             placeholder="Пароль"
           />
-          <Button fluid size="large" color="teal">
+          {error && (
+            <Label basic color="red">
+              {error}
+            </Label>
+          )}
+          <Button
+            disabled={invalid || submitting}
+            fluid
+            size="large"
+            color="teal"
+          >
             Регистрация
           </Button>
+          <Divider horizontal>или</Divider>
+          <SocialLogin />
         </Segment>
       </Form>
     </div>
   );
 };
 
-export default reduxForm()(RegisterForm);
+export default connect(
+  null,
+  actions
+)(reduxForm({ form: "registerForm", validate })(RegisterForm));

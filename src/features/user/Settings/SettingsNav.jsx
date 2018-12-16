@@ -25,9 +25,9 @@ const SettingsNav = () => {
             attached
             inverted
             color="grey"
-            content="Аккаунт"
+            content="Учётная Запись"
           />
-          <Menu.Item as={NavLink} to='/settings/account'>Мой Аккаунт</Menu.Item>
+          <Menu.Item as={NavLink} to='/settings/account'>Аккаунт</Menu.Item>
         </Menu>
       </Grid.Column>
     </div>

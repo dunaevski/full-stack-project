@@ -7,7 +7,7 @@ class EventList extends Component {
     return (
       <div>
         {/* Передаёмe все данные из State через map  */}
-        {events.map(event => (
+        {events && events.map(event => (
           <EventListItem
             key={event.id}
             event={event}

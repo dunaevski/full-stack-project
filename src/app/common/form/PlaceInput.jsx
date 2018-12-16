@@ -17,7 +17,7 @@ const PlaceInput = ({
         search
         fluid
         onSearchChange={onSearchChange}
-        onChange={(param, data) => onChange(data.value)}
+        onChange={(param, data) => onChange(data.value )}
         defaultValue={defaultValue}
         noResultsMessage={noResultsMessage}
         placeholder={placeholder}

@@ -3,12 +3,7 @@ import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 import axios from "axios";
 import moment from "moment";
-import {
-  composeValidators,
-  combineValidators,
-  isRequired,
-  hasLengthGreaterThan
-} from "revalidate";
+import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from "revalidate";
 import cuid from "cuid";
 import { Segment, Form, Button, Header, Grid } from "semantic-ui-react";
 import { createEvent, updateEvent } from "../eventActions";
@@ -64,27 +59,27 @@ class EventForm extends Component {
   state = {
     resultCity: [
       {
-        text: this.props.initialValues.city || "Не найдено 😌",
+        text: this.props.initialValues.city || "Введите город 🏙",
         value: this.props.initialValues.city || "",
         key: "c"
       }
     ],
     resultVenue: [
       {
-        text: this.props.initialValues.venue || "Не найдено 😌",
+        text: this.props.initialValues.venue || "Введите место 🗾",
         value: this.props.initialValues.venue,
         key: "v"
       }
     ],
-    venueLatLng: {},
-    cityLatLng: {}
+    city: {},
+    venue: {},
+    venueLatLng: {}
   };
 
   handlerGetCity = e => {
     axios
       .get(
-        "https://geocode-maps.yandex.ru/1.x/?format=json&geocode=" +
-          e.target.value
+       `https://geocode-maps.yandex.ru/1.x/?format=json&geocode=${e.target.value}`
       )
       .then(response => {
         let data = [];
@@ -100,20 +95,23 @@ class EventForm extends Component {
         this.setState({
           resultCity: data
         });
-      })
-      .then(() => {
-        this.props.change("city", this.state.resultCity[0]);
       });
+  };
+
+  SelectCity = e => {
+    let data = Object.values(e)
+      .slice(0, -1)
+      .join("");
+    this.setState({
+      city: data
+    });
+    this.props.change("city", data);
   };
 
   handlerGetVenue = e => {
     axios
       .get(
-        "https://search-maps.yandex.ru/v1/?text=" +
-          e.target.value +
-          "," +
-          this.state.resultCity[0].value +
-          "&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7"
+        `https://search-maps.yandex.ru/v1/?text=${e.target.value},${this.state.resultCity[0].value}&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7`
       )
       .then(response => {
         let data = [];
@@ -126,24 +124,35 @@ class EventForm extends Component {
             ].toString(),
             key: index
           });
-          this.setState({
-            venueLatLng: item.geometry.coordinates
-          });
         });
         this.setState({
           resultVenue: data
         });
-      })
-      .then(() => {
+      });
+  };
+
+  SelectVenue = e => {
+    let data = Object.values(e)
+      .slice(0, -1)
+      .join("");
+    this.setState({
+      venue: data
+    });
+    axios
+      .get(
+        `https://search-maps.yandex.ru/v1/?text=${data},${this.state.city}&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7`
+      )
+      .then(response => {
+        let coord = response.data.features[0].geometries[0].coordinates;
         const latLng = {
-          lat: this.state.venueLatLng[1],
-          lng: this.state.venueLatLng[0]
+          lat: coord[1],
+          lng: coord[0]
         };
         this.setState({
           venueLatLng: latLng
         });
-        this.props.change("venue", this.state.resultVenue);
       });
+    this.props.change("venue", this.state.resultVenue);
   };
 
   onFormSubmit = values => {
@@ -203,6 +212,7 @@ class EventForm extends Component {
                 defaultValue={this.props.initialValues.city}
                 noResultsMessage="Ничего не найдено 😌"
                 onSearchChange={this.handlerGetCity}
+                onChange={this.SelectCity}
               />
 
               <Field
@@ -214,6 +224,7 @@ class EventForm extends Component {
                 defaultValue={this.props.initialValues.venue}
                 noResultsMessage="Ничего не найдено 😌"
                 onSearchChange={this.handlerGetVenue}
+                onChange={this.SelectVenue}
               />
 
               <Field

@@ -36,7 +36,7 @@ const EventDetailedHeader = ({ event }) => {
                   content={event.title}
                   style={{ color: "white" }}
                 />
-                <p>{format(event.date, "ddd DD MMM YYYY", { locale: ru })}</p>
+                <p>{format(event.date.toDate(), "ddd DD MMM YYYY", { locale: ru })}</p>
                 <p>
                   Организатор: <strong>{event.hostedBy}</strong>
                 </p>

@@ -1,5 +1,6 @@
 import React, { Component } from "react"; // Добовление React
 import { connect } from "react-redux"; // Добовляем connect Redux
+import { firestoreConnect } from 'react-redux-firebase';
 import { Grid } from "semantic-ui-react"; // Добовление элементов из semantic-ui-react
 import EventList from "../EventList/EventList"; // Добовление комппонента EventList
 import { deleteEvent } from "../eventActions";
@@ -16,7 +17,7 @@ import EventActivity from "../EventActivity/EventActivity";
 // var sum = (...args) => args.reduce((m, n) => m + n, 0);
 
 const mapState = state => ({
-  events: state.events,
+  events: state.firestore.ordered.events,
   loading: state.async.loading
 });
 
@@ -52,7 +53,6 @@ class EventDashboard extends Component {
   }
 }
 
-export default connect(
-  mapState,
-  actions
-)(EventDashboard);
+export default connect(mapState, actions)(
+  firestoreConnect([{ collection: 'events' }])(EventDashboard)
+);
