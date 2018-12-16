@@ -13,7 +13,7 @@ export const login = creds => {
     } catch (error) {
       console.log(error);
       throw new SubmissionError({
-        _error: "Ошибка входа 🔥🔥🔥"
+        _error: "Ошибка авторизации! 🔥🔥🔥"
       });
     }
   };
