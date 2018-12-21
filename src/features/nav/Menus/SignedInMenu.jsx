@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, Dropdown, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
-const SignedInMenu = ({ signOut, profile }) => {
+const SignedInMenu = ({ signOut, profile, auth }) => {
   return (
     <Menu.Item position="right">
       <Image
@@ -15,7 +15,7 @@ const SignedInMenu = ({ signOut, profile }) => {
           <Dropdown.Item text="Создать Событие" icon="plus" />
           <Dropdown.Item text="Мои События" icon="calendar" />
           <Dropdown.Item text="Мои Друзья" icon="users" />
-          <Dropdown.Item text="Моя Страница" icon="user" />
+          <Dropdown.Item as={Link} to={`/profile/${auth.uid}`} text="Моя Страница" icon="user" />
           <Dropdown.Item
             as={Link}
             to="/settings"

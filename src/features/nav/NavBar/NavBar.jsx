@@ -7,7 +7,6 @@ import SignedOutMenu from "../Menus/SignedOutMenu";
 import SignedInMenu from "../Menus/SignedInMenu";
 import { openModal } from "../../modals/modalActions";
 
-
 const actions = {
   openModal
 };
@@ -59,6 +58,7 @@ class NavBar extends Component {
           )}
           {authenticated ? (
             <SignedInMenu
+              auth={auth}
               profile={profile}
               signOut={this.handleSignOut}
             />
