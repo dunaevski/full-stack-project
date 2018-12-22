@@ -33,12 +33,12 @@ const actions = {
 };
 
 const category = [
-  { key: "drinks", text: "Напитки", value: "drinks" },
-  { key: "culture", text: "Культура", value: "culture" },
-  { key: "film", text: "Фильмы", value: "film" },
-  { key: "food", text: "Еда", value: "food" },
-  { key: "music", text: "Музыка", value: "music" },
-  { key: "travel", text: "Путишествие", value: "travel" }
+  { key: "drinks", text: "Напитки", value: "Напитки" },
+  { key: "culture", text: "Культура", value: "Культура" },
+  { key: "film", text: "Фильмы", value: "Фильмы" },
+  { key: "food", text: "Еда", value: "Еда" },
+  { key: "music", text: "Музыка", value: "Музыка" },
+  { key: "travel", text: "Путишествие", value: "Путишествие" }
 ];
 
 const validate = combineValidators({

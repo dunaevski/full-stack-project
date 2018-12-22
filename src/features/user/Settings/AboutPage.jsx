@@ -9,12 +9,12 @@ import SelectInput from "../../../app/common/form/SelectInput";
 // import axios from 'axios'
 
 const interests = [
-  { key: "drinks", text: "Напитки", value: "drinks" },
-  { key: "culture", text: "Культура", value: "culture" },
-  { key: "film", text: "Фильмы", value: "film" },
-  { key: "food", text: "Еда", value: "food" },
-  { key: "music", text: "Музыка", value: "music" },
-  { key: "travel", text: "Путишествие", value: "travel" }
+  { key: "drinks", text: "Напитки", value: "Напитки" },
+  { key: "culture", text: "Культура", value: "Культура" },
+  { key: "film", text: "Фильмы", value: "Фильмы" },
+  { key: "food", text: "Еда", value: "Еда" },
+  { key: "music", text: "Музыка", value: "Музыка" },
+  { key: "travel", text: "Путишествие", value: "Путишествие" }
 ];
 
 // const resultCity = [
@@ -64,22 +64,22 @@ const AboutPage = ({ pristine, submitting, handleSubmit, updateProfile }) => {
             name="status"
             component={RadioInput}
             type="radio"
-            value="single"
+            value="В активном поиске"
             label="  В активном поиске"
           />
           <Field
             name="status"
             component={RadioInput}
             type="radio"
-            value="relationship"
+            value="Встречаюсь"
             label="  Встречаюсь"
           />
           <Field
             name="status"
             component={RadioInput}
             type="radio"
-            value="married"
-            label="  Женат"
+            value="Подарил кольцо"
+            label="  Подарил кольцо"
           />
         </Form.Group>
         <Divider />
