@@ -20,7 +20,7 @@ export const updateProfile = user => async (
 
   try {
     await firebase.updateProfile(updatedUser);
-    toastr.success("Успех!", "Профиль был изменен 👍");
+    toastr.success("Ура 🎉", "Профиль был изменен 👍");
   } catch (error) {
     console.log(error);
   }
@@ -113,5 +113,56 @@ export const setMainPhoto = photo => async (
   } catch (error) {
     console.log(error);
     throw new Error("Houston, we have a problem set photo");
+  }
+};
+
+export const goingToEvent = event => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
+  const firestore = getFirestore();
+  const user = firestore.auth().currentUser;
+  const photoURL = getState().firebase.profile.photoURL;
+  const attendee = {
+    going: true,
+    joinDate: Date.now(),
+    photoURL: photoURL || "/assets/user.png",
+    displayName: user.displayName,
+    host: false
+  };
+  try {
+    await firestore.update(`events/${event.id}`, {
+      [`attendees.${user.uid}`]: attendee
+    });
+    await firestore.set(`event_attendee/${event.id}_${user.uid}`, {
+      eventId: event.id,
+      userUid: user.uid,
+      eventDate: event.date,
+      host: false
+    });
+    toastr.success("Ура 🎉", "Вы подписались на событие");
+  } catch (error) {
+    console.log(error);
+    toastr.error("Упс...", "У нас проблемы с присоединением");
+  }
+};
+
+export const cancelGoingToEvent = event => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
+  const firestore = getFirestore();
+  const user = firestore.auth().currentUser;
+  try {
+    await firestore.update(`events/${event.id}`, {
+      [`attendees.${user.uid}`]: firestore.FieldValue.delete()
+    });
+    await firestore.delete(`event_attendee/${event.id}_${user.uid}`);
+    toastr.success("Ура 🎉", "Вы отписались от события");
+  } catch (error) {
+    console.log(error);
+    toastr.error("Упс...", "У нас проблемы с отпиской");
   }
 };

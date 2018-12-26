@@ -1,44 +1,48 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withFirestore } from "react-redux-firebase";
 import { reduxForm, Field } from "redux-form";
 import axios from "axios";
-import moment from "moment";
-import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from "revalidate";
-import cuid from "cuid";
+import {
+  composeValidators,
+  combineValidators,
+  isRequired,
+  hasLengthGreaterThan
+} from "revalidate";
 import { Segment, Form, Button, Header, Grid } from "semantic-ui-react";
-import { createEvent, updateEvent } from "../eventActions";
+import { createEvent, updateEvent, cancelToggle } from "../eventActions";
 import TextInput from "../../../app/common/form/TextInput";
 import TextArea from "../../../app/common/form/TextArea";
 import SelectInput from "../../../app/common/form/SelectInput";
 import DateInput from "../../../app/common/form/DateInput";
 import PlaceInput from "../../../app/common/form/PlaceInput";
 
-const mapState = (state, ownProps) => {
-  const eventId = ownProps.match.params.id;
-
+const mapState = state => {
   let event = {};
 
-  if (eventId && state.events.length > 0) {
-    event = state.events.filter(event => event.id === eventId)[0];
+  if (state.firestore.ordered.events && state.firestore.ordered.events[0]) {
+    event = state.firestore.ordered.events[0];
   }
 
   return {
-    initialValues: event
+    initialValues: event,
+    event
   };
 };
 
 const actions = {
   createEvent,
-  updateEvent
+  updateEvent,
+  cancelToggle
 };
 
 const category = [
-  { key: "drinks", text: "Напитки", value: "Напитки" },
-  { key: "culture", text: "Культура", value: "Культура" },
-  { key: "film", text: "Фильмы", value: "Фильмы" },
-  { key: "food", text: "Еда", value: "Еда" },
-  { key: "music", text: "Музыка", value: "Музыка" },
-  { key: "travel", text: "Путишествие", value: "Путишествие" }
+  { key: "drinks", text: "Напитки", value: "drinks" },
+  { key: "culture", text: "Культура", value: "culture" },
+  { key: "film", text: "Фильмы", value: "film" },
+  { key: "food", text: "Еда", value: "food" },
+  { key: "music", text: "Музыка", value: "music" },
+  { key: "travel", text: "Путишествие", value: "travel" }
 ];
 
 const validate = combineValidators({
@@ -76,10 +80,22 @@ class EventForm extends Component {
     venueLatLng: {}
   };
 
+  async componentDidMount() {
+    const { firestore, match } = this.props;
+    await firestore.setListener(`events/${match.params.id}`);
+  }
+
+  async componentWillUnmount() {
+    const { firestore, match } = this.props;
+    await firestore.unsetListener(`events/${match.params.id}`);
+  }
+
   handlerGetCity = e => {
     axios
       .get(
-       `https://geocode-maps.yandex.ru/1.x/?format=json&geocode=${e.target.value}`
+        `https://geocode-maps.yandex.ru/1.x/?format=json&geocode=${
+          e.target.value
+        }`
       )
       .then(response => {
         let data = [];
@@ -111,7 +127,9 @@ class EventForm extends Component {
   handlerGetVenue = e => {
     axios
       .get(
-        `https://search-maps.yandex.ru/v1/?text=${e.target.value},${this.state.resultCity[0].value}&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7`
+        `https://search-maps.yandex.ru/v1/?text=${e.target.value},${
+          this.state.resultCity[0].value
+        }&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7`
       )
       .then(response => {
         let data = [];
@@ -140,7 +158,9 @@ class EventForm extends Component {
     });
     axios
       .get(
-        `https://search-maps.yandex.ru/v1/?text=${data},${this.state.city}&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7`
+        `https://search-maps.yandex.ru/v1/?text=${data},${
+          this.state.city
+        }&type=biz&lang=ru_RU&apikey=a3ba7395-7502-4ab6-95c8-f1b8c8c165d7`
       )
       .then(response => {
         let coord = response.data.features[0].geometries[0].coordinates;
@@ -156,25 +176,21 @@ class EventForm extends Component {
   };
 
   onFormSubmit = values => {
-    values.date = moment(values.date).format();
     values.venueLatLng = this.state.venueLatLng;
     if (this.props.initialValues.id) {
+      if (Object.keys(values.venueLatLng).length === 0) {
+        values.venueLatLng = this.props.event.venueLatLng;
+      }
       this.props.updateEvent(values);
       this.props.history.goBack();
     } else {
-      const newEvent = {
-        ...values,
-        id: cuid(),
-        hostPhotoURL: "/assets/user.png",
-        hostedBy: "Катя"
-      };
-      this.props.createEvent(newEvent);
+      this.props.createEvent(values);
       this.props.history.push("/events");
     }
   };
 
   render() {
-    const { invalid, submitting, pristine } = this.props;
+    const { invalid, submitting, pristine, event, cancelToggle } = this.props;
 
     return (
       <Grid>
@@ -250,6 +266,17 @@ class EventForm extends Component {
               >
                 Отмена
               </Button>
+              <Button
+                onClick={() => cancelToggle(!event.cancelled, event.id)}
+                type="button"
+                color={event.cancelled ? "green" : "red"}
+                floated="right"
+                content={
+                  event.cancelled
+                    ? "Повторно создать событие"
+                    : "Отменить событие"
+                }
+              />
             </Form>
           </Segment>
         </Grid.Column>
@@ -258,11 +285,13 @@ class EventForm extends Component {
   }
 }
 
-export default connect(
-  mapState,
-  actions
-)(
-  reduxForm({ form: "eventForm", enableReinitialize: true, validate })(
-    EventForm
+export default withFirestore(
+  connect(
+    mapState,
+    actions
+  )(
+    reduxForm({ form: "eventForm", enableReinitialize: true, validate })(
+      EventForm
+    )
   )
 );

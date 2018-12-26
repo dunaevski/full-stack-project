@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Segment, Header, Item, Icon, List } from "semantic-ui-react";
+import { Grid, Segment, Header, Item, Divider, List } from "semantic-ui-react";
 import format from "date-fns/format";
 import ru from "date-fns/locale/ru";
 
@@ -34,8 +34,8 @@ const UserDetailedInfo = ({ profile }) => {
               ? "Нет интересов 🤭"
               : profile.interests.map((interest, index) => (
                   <Item key={index}>
-                    <Icon name="heart" />
                     <Item.Content>{interest}</Item.Content>
+                    <Divider inverted />
                   </Item>
                 ))}
             <List />

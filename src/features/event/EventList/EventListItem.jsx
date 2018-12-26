@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { Segment, Item, Icon, List, Button } from "semantic-ui-react";
+import { Segment, Item, Icon, List, Button, Label } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import format from "date-fns/format";
-import ru from 'date-fns/locale/ru'
+import ru from "date-fns/locale/ru";
 import EventListAttendee from "./EventListAttendee";
+import { objectToArray } from "../../../app/common/util/helpers";
 
 class EventListItem extends Component {
   render() {
-    const { event, deleteEvents } = this.props; // Получем данные из копмонента через props
+    const { event } = this.props; // Получем данные из копмонента через props
     return (
       <Segment.Group>
         <Segment>
@@ -15,10 +16,21 @@ class EventListItem extends Component {
             <Item>
               <Item.Image size="tiny" circular src={event.hostPhotoURL} />
               <Item.Content>
-                <Item.Header as="a">{event.title}</Item.Header>
+                <Item.Header as={Link} to={`/event/${event.id}`}>
+                  {event.title}
+                </Item.Header>
                 <Item.Description>
-                  Опубликованно <a>{event.hostedBy}</a>
+                  Организатор:{" "}
+                  <Link to={`/profile/${event.hostUid}`}>{event.hostedBy}</Link>
                 </Item.Description>
+                {event.cancelled && (
+                  <Label
+                    style={{ top: "-40px" }}
+                    ribbon="right"
+                    color="red"
+                    content="Это событие отменено 😞"
+                  />
+                )}
               </Item.Content>
             </Item>
           </Item.Group>
@@ -26,7 +38,7 @@ class EventListItem extends Component {
         <Segment>
           <span>
             <Icon name="clock" />{" "}
-            {format( event.date.toDate(), "ddd DD MMM YYYY", { locale: ru })} в{" "}
+            {format(event.date.toDate(), "ddd DD MMM YYYY", { locale: ru })} в{" "}
             {format(event.date.toDate(), "HH:mm")}
             <Icon name="marker" /> {event.venue}
           </span>
@@ -34,20 +46,16 @@ class EventListItem extends Component {
         <Segment secondary>
           <List horizontal>
             {event.attendees &&
-              Object.values(event.attendees).map((attendee, index) => (
-                <EventListAttendee key={index} attendee={attendee} />
+              objectToArray(event.attendees).map(attendee => (
+                <EventListAttendee key={attendee.id} attendee={attendee} />
               ))}
           </List>
         </Segment>
         <Segment clearing>
           <span>{event.description}</span>
-          <Button
-            onClick={deleteEvents(event.id)} // Вызов функции по кнопке и передача ID
-            as="a"
-            color="red"
-            floated="right"
-            content="Удалить"
-          />
+        </Segment>
+
+        <Segment clearing>
           <Button
             as={Link}
             to={`/event/${event.id}`}
