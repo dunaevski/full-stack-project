@@ -10,6 +10,7 @@ import UserDetailedEvents from "./UserDetailedEvents";
 import UserDetailedSidebar from "./UserDetailedSidebar";
 import { userDetailedQuery } from "../userQueries";
 import LoadingComonent from "../../../app/layout/LoadingComonent";
+import { getUserEvents } from "../userActions";
 
 const mapState = (state, ownProps) => {
   let userUid = null;
@@ -26,6 +27,8 @@ const mapState = (state, ownProps) => {
   return {
     profile,
     userUid,
+    events: state.events,
+    eventsLoading: state.async.loading,
     auth: state.firebase.auth,
     photos: state.firestore.ordered.photos,
     showPhotos: state.firestore.data.photos,
@@ -33,9 +36,24 @@ const mapState = (state, ownProps) => {
   };
 };
 
+const actions = {
+  getUserEvents
+};
+
 class UserDetailedPage extends Component {
+
+  async componentDidMount() {
+    let events = await this.props.getUserEvents(this.props.userUid)
+    console.log(events);
+  }
+
+  changeTab = (e,data) => {
+    this.props.getUserEvents(this.props.userUid, data.activeIndex)
+    
+  }
+
   render() {
-    const { profile, photos, showPhotos, auth, match, requesting } = this.props;
+    const { profile, photos, showPhotos, auth, match, requesting, events, eventsLoading } = this.props;
     const isCurrnetUser = auth.uid === match.params.id;
     const loading = Object.values(requesting).some(a => a === true);
 
@@ -47,13 +65,16 @@ class UserDetailedPage extends Component {
         <UserDetailedInfo profile={profile} />
         <UserDetailedSidebar isCurrnetUser={isCurrnetUser} />
         {showPhotos && <UserDetailedPhoto profile={profile} photos={photos} />}
-        <UserDetailedEvents />
+        <UserDetailedEvents events={events} eventsLoading={eventsLoading} changeTab={this.changeTab}/>
       </Grid>
     );
   }
 }
 
 export default compose(
-  connect(mapState),
+  connect(
+    mapState,
+    actions
+  ),
   firestoreConnect((auth, userUid) => userDetailedQuery(auth, userUid))
 )(UserDetailedPage);

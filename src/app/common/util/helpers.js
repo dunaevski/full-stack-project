@@ -8,12 +8,12 @@ export const objectToArray = (object) => {
     }
 }
 
-export const createNewEvent = (user, photoURL, event) => {
+export const createNewEvent = (user, photoURL, displayName, event) => {
     event.date = moment(event.date).toDate()
     return {
         ...event,
         hostUid: user.uid,
-        hostedBy: user.displayName,
+        hostedBy: displayName,
         hostPhotoURL: photoURL || '/assets/user.png',
         created: Date.now(),
         attendees: {
@@ -21,7 +21,7 @@ export const createNewEvent = (user, photoURL, event) => {
                 going: true,
                 joinDate: Date.now(),
                 photoURL: photoURL || '/assets/user.png',
-                displayName: user.displayName,
+                displayName: displayName,
                 host: true
             }
         }

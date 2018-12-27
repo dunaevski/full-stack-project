@@ -1,11 +1,12 @@
 import React, { Component } from "react"; // Добовление React
 import { connect } from "react-redux"; // Добовляем connect Redux
-import { firestoreConnect, isLoaded, isEmpty } from "react-redux-firebase";
-import { Grid } from "semantic-ui-react"; // Добовление элементов из semantic-ui-react
+import { firestoreConnect } from "react-redux-firebase";
+import { Grid, Loader } from "semantic-ui-react"; // Добовление элементов из semantic-ui-react
 import EventList from "../EventList/EventList"; // Добовление комппонента EventList
-import { deleteEvent } from "../eventActions";
+import { getEventsForDashboard } from "../eventActions";
 import LoadingComonent from "../../../app/layout/LoadingComonent";
 import EventActivity from "../EventActivity/EventActivity";
+
 // // раньше
 // var sum = function() {
 //   return [].reduce.call(arguments, function(m, n) {
@@ -17,35 +18,74 @@ import EventActivity from "../EventActivity/EventActivity";
 // var sum = (...args) => args.reduce((m, n) => m + n, 0);
 
 const mapState = state => ({
-  events: state.firestore.ordered.events
+  events: state.events,
+  loading: state.async.loading
 });
 
 const actions = {
-  deleteEvent
+  getEventsForDashboard
 };
 
 class EventDashboard extends Component {
-  // Удаление события из EventList
-  handleDeleteEvent = eventId => () => {
-    //Redux удаление
-    this.props.deleteEvent(eventId);
+  state = {
+    moreEvents: false,
+    loadingInitial: true,
+    loadedEvents: []
+  };
+
+  async componentDidMount() {
+    let next = await this.props.getEventsForDashboard();
+    console.log(next);
+
+    if (next && next.docs && next.docs.length > 1) {
+      this.setState({
+        moreEvents: true,
+        loadingInitial: false
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.events !== nextProps.events) {
+      this.setState({
+        loadedEvents: [...this.state.loadedEvents, ...nextProps.events]
+      });
+    }
+  }
+
+  getNextEvents = async () => {
+    const { events } = this.props;
+    let lastEvent = events && events[events.length - 1];
+    console.log(lastEvent);
+    let next = await this.props.getEventsForDashboard(lastEvent);
+    console.log(next);
+    if (next && next.docs && next.docs.length <= 1) {
+      this.setState({
+        moreEvents: false
+      });
+    }
   };
 
   render() {
-    const { events } = this.props;
-    if (!isLoaded(events) || isEmpty(events))
-      return <LoadingComonent inverted={false} />;
+    const { loading } = this.props;
+    const { moreEvents, loadedEvents } = this.state;
+    if (this.state.loadingInitial) return <LoadingComonent inverted={false} />;
     return (
       <div>
         <Grid>
           <Grid.Column width={11}>
             <EventList
-              deleteEvents={this.handleDeleteEvent} // Передаём метод в компонент
-              events={events} // Передаём события из State
+              loading={loading}
+              moreEvents={moreEvents}
+              getNextEvents={this.getNextEvents}
+              events={loadedEvents} // Передаём события из State
             />
           </Grid.Column>
           <Grid.Column width={5}>
             <EventActivity />
+          </Grid.Column>
+          <Grid.Column width={10}>
+            <Loader active={loading}/>
           </Grid.Column>
         </Grid>
       </div>
