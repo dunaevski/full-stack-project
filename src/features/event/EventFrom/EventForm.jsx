@@ -70,7 +70,7 @@ class EventForm extends Component {
     ],
     resultVenue: [
       {
-        text: this.props.initialValues.venue || "Введите место 🗾",
+        text: this.props.initialValues.venue || "Введите место ☕️",
         value: this.props.initialValues.venue,
         key: "v"
       }
