@@ -1,12 +1,11 @@
 import { toastr } from "react-redux-toastr";
-import { DELETE_EVENT, FETCH_EVENT } from "./eventConstants";
+import {  FETCH_EVENT } from "./eventConstants";
 import {
   asyncActionStart,
   asyncActionFinished,
   asyncActionError
 } from "../async/asyncActions";
 import moment from "moment";
-import { fetchSampleData } from "../../app/data/mockApi";
 import { createNewEvent } from "../../app/common/util/helpers";
 import firebase from "../../app/config/firebase";
 
