@@ -24,3 +24,26 @@ export const userDetailedQuery = ({ auth, userUid }) => {
     ];
   }
 };
+
+export const peopleFollowQuery = ({ auth, match }) => {
+  return [
+    {
+      collection: "users",
+      doc: auth.uid,
+      subcollections: [{ collection: "followers" }],
+      storeAs: "followers"
+    },
+    {
+      collection: "users",
+      doc: auth.uid,
+      subcollections: [{ collection: "following" }],
+      storeAs: "following"
+    },
+    { 
+      collection: 'users',
+      doc: auth.uid,
+      subcollections: [{collection: 'following', doc: match.params.id}],
+      storeAs: 'isFollowing'
+    }
+  ];
+};

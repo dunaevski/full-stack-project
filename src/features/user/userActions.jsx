@@ -213,12 +213,63 @@ export const getUserEvents = (userUid, activeTab) => async (
         .get();
       events.push({ ...evt.data(), id: evt.id });
     }
-    
+
     dispatch({ type: FETCH_EVENT, payload: { events } });
 
     dispatch(asyncActionFinished());
   } catch (error) {
     console.log(error);
     dispatch(asyncActionError());
+  }
+};
+
+// Пользователь подписываеться на людей
+export const follow = profile => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
+  const firestore = getFirestore();
+  const user = firestore.auth().currentUser;
+  try {
+    await firestore.set(
+      {
+        collection: "users",
+        doc: user.uid,
+        subcollections: [{ collection: `following`, doc: profile.id }]
+      },
+      {
+        city: profile.city || "Без определённого места жительства",
+        displayName: profile.displayName,
+        photoURL: profile.photoURL || "/assets/user.png"
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    dispatch(asyncActionError());
+    throw new Error("Houston, we have a problem with upload");
+  }
+};
+
+// Пользователь отписывается от людей
+export const unFollow = profile => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
+  const firestore = getFirestore();
+  const user = firestore.auth().currentUser
+  try {
+    await firestore.delete(
+      {
+        collection: "users",
+        doc: user.uid,
+        subcollections: [{ collection: `following`, doc: profile.id }]
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    dispatch(asyncActionError());
+    throw new Error("Houston, we have a problem with upload");
   }
 };

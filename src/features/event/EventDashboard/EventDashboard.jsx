@@ -74,6 +74,8 @@ class EventDashboard extends Component {
   };
 
   handleContextRef = contextRef => this.setState({ contextRef });
+
+  
   render() {
     const { loading, activities } = this.props;
     const { moreEvents, loadedEvents } = this.state;
