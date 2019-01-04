@@ -1,5 +1,5 @@
 import { toastr } from "react-redux-toastr";
-import {  FETCH_EVENT } from "./eventConstants";
+import { FETCH_EVENT } from "./eventConstants";
 import {
   asyncActionStart,
   asyncActionFinished,
@@ -8,6 +8,7 @@ import {
 import moment from "moment";
 import { createNewEvent } from "../../app/common/util/helpers";
 import firebase from "../../app/config/firebase";
+import compareAsc from "date-fns/compare_asc";
 
 export const createEvent = event => {
   return async (dispatch, getState, { getFirestore }) => {
@@ -32,15 +33,46 @@ export const createEvent = event => {
 };
 
 export const updateEvent = event => {
-  return async (dispatch, getState, { getFirestore }) => {
-    const firestore = getFirestore();
+  return async (dispatch, getState) => {
+    dispatch(asyncActionStart());
+    const firestore = firebase.firestore();
     if (event.date !== getState().firestore.ordered.events[0].date) {
       event.date = moment(event.date).toDate();
     }
     try {
-      await firestore.update(`events/${event.id}`, event);
+      let eventDocRef = firestore.collection("events").doc(event.id);
+      let dateEqual = compareAsc(
+        getState().firestore.ordered.events[0].date.toDate(),
+        event.date
+      );
+      if (dateEqual !== 0) {
+        let batch = firestore.batch();
+        await batch.update(eventDocRef, event);
+
+        let eventAttendeeRef = firestore.collection("event_attendee");
+        let eventAttendeeQuery = await eventAttendeeRef.where(
+          "eventId",
+          "==",
+          event.id
+        );
+        let eventAttendeeQuerySnap = await eventAttendeeQuery.get();
+
+        for (let i = 0; i < eventAttendeeQuerySnap.docs.length; i++) {
+          let eventAttendeeDocsRef = await firestore
+            .collection("event_attendee")
+            .doc(eventAttendeeQuerySnap.docs[i].id);
+          await batch.update(eventAttendeeDocsRef, {
+            eventDate: event.date
+          });
+        }
+        await batch.commit();
+      } else {
+        await eventDocRef.update(event);
+      }
+      dispatch(asyncActionFinished());
       toastr.success("Успех!", "Событие изменено 👍");
     } catch (error) {
+      dispatch(asyncActionError());
       toastr.error("Упс...", "Что-то пошло не так 😌");
     }
   };
@@ -128,7 +160,7 @@ export const addEventComment = (eventId, values, parentId) => async (
   let newComment = {
     parentId: parentId,
     displayName: profile.displayName,
-    photoURL: profile.photoURL || 'assets/user.png',
+    photoURL: profile.photoURL || "assets/user.png",
     uid: user.uid,
     text: values.comment,
     date: Date.now()

@@ -22,6 +22,7 @@ const EventDetailedHeader = ({
   isHost,
   isGoing,
   goingToEvent,
+  loading,
   cancelGoingToEvent
 }) => {
   let eventDate;
@@ -64,7 +65,11 @@ const EventDetailedHeader = ({
                 Отписаться от события
               </Button>
             ) : (
-              <Button onClick={() => goingToEvent(event)} color="teal">
+              <Button
+                loading={loading}
+                onClick={() => goingToEvent(event)}
+                color="teal"
+              >
                 ПРИСОЕДИНИТЬСЯ К СОБЫТИЮ
               </Button>
             )}
