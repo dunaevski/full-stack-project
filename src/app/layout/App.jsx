@@ -9,8 +9,9 @@ import UserDetailedPage from "../../features/user/UserDetailed/UserDetailedPage"
 import PeopleDashboard from "../../features/user/PeopleDashboard/PeopleDashboard";
 import EventDetailedPage from "../../features/event/EventDetailed/EventDetailedPage";
 import HomePage from "../../features/home/HomePage";
-import TestComponent from '../../features/testarea/TestComponent'
-import ModalManager from '../../features/modals/ModalManager'
+import TestComponent from "../../features/testarea/TestComponent";
+import ModalManager from "../../features/modals/ModalManager";
+import { UserIsAuthenticated } from "../../features/auth/authWrapper";
 
 class App extends Component {
   render() {
@@ -31,11 +32,26 @@ class App extends Component {
                   <Route path="/events" component={EventDashboard} />
                   <Route path="/test" component={TestComponent} />
                   <Route path="/event/:id" component={EventDetailedPage} />
-                  <Route path="/manage/:id" component={EventFrom} />
-                  <Route path="/people" component={PeopleDashboard} />
-                  <Route path="/profile/:id" component={UserDetailedPage} />
-                  <Route path="/settings" component={SettingsDashboard} />
-                  <Route path="/createEvent" component={EventFrom} />
+                  <Route
+                    path="/manage/:id"
+                    component={UserIsAuthenticated(EventFrom)}
+                  />
+                  <Route
+                    path="/people"
+                    component={UserIsAuthenticated(PeopleDashboard)}
+                  />
+                  <Route
+                    path="/profile/:id"
+                    component={UserIsAuthenticated(UserDetailedPage)}
+                  />
+                  <Route
+                    path="/settings"
+                    component={UserIsAuthenticated(SettingsDashboard)}
+                  />
+                  <Route
+                    path="/createEvent"
+                    component={UserIsAuthenticated(EventFrom)}
+                  />
                 </Switch>
               </Container>
             </div>
