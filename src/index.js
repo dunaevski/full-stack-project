@@ -9,7 +9,7 @@ import './index.css';
 import App from './app/layout/App';
 import * as serviceWorker from './serviceWorker'
 import { configureStore } from './app/store/configureStore';
-import ScrollToTop from './app/common/util/ScrollToTop';
+import ScrollToTop from './app/common/util/scrollToTop';
 
 const store = configureStore();
 
