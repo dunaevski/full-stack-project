@@ -40,10 +40,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer build/static/js/main.*",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
+    "gh-pages": "^2.0.1",
     "redux-devtools-extension": "^2.13.2",
     "source-map-explorer": "^1.5.0"
-  }
+  },
+  "homepage": "https://dunaevski.github.io/full-stack-project/"
 }

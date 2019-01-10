@@ -41,7 +41,6 @@ class NavBar extends Component {
             Bukakke
           </Menu.Item>
           <Menu.Item as={NavLink} to="/events" name="События" />
-          <Menu.Item as={NavLink} to="/test" name="Test" />
           {authenticated && <Menu.Item as={NavLink} to="/people" name="Люди" />}
 
           {authenticated && (
