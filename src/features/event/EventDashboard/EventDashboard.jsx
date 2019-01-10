@@ -4,7 +4,7 @@ import { firestoreConnect } from "react-redux-firebase";
 import { Grid, Loader } from "semantic-ui-react"; // Добовление элементов из semantic-ui-react
 import EventList from "../EventList/EventList"; // Добовление комппонента EventList
 import { getEventsForDashboard } from "../eventActions";
-import LoadingComonent from "../../../app/layout/LoadingComonent";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 import EventActivity from "../EventActivity/EventActivity";
 
 const query = [
@@ -79,7 +79,7 @@ class EventDashboard extends Component {
   render() {
     const { loading, activities } = this.props;
     const { moreEvents, loadedEvents } = this.state;
-    if (this.state.loadingInitial) return <LoadingComonent inverted={false} />;
+    if (this.state.loadingInitial) return <LoadingComponent inverted={false} />;
     return (
       <div>
         <Grid>

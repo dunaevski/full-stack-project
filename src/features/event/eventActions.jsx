@@ -160,7 +160,7 @@ export const addEventComment = (eventId, values, parentId) => async (
   let newComment = {
     parentId: parentId,
     displayName: profile.displayName,
-    photoURL: profile.photoURL || "assets/user.png",
+    photoURL: profile.photoURL || "/assets/user.png",
     uid: user.uid,
     text: values.comment,
     date: Date.now()
