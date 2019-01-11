@@ -120,7 +120,7 @@ self.__precacheManifest = [
     "url": "/full-stack-project/static/css/15.6b0ca185.chunk.css"
   },
   {
-    "revision": "c08ae523e42109af35bd66497bd79de5",
+    "revision": "4664355fe415400b1a69090cb133bace",
     "url": "/full-stack-project/index.html"
   }
 ];
