@@ -1,7 +1,7 @@
 {
   "name": "revents",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage": "https://dunaevski.github.io/full-stack-project",
   "dependencies": {
     "axios": "^0.18.0",
@@ -26,7 +26,7 @@
     "react-redux-toastr": "^7.2.3",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
-    "react-scripts": "1.1.2",
+    "react-scripts": "^2.1.3",
     "redux": "^3.7.2",
     "redux-auth-wrapper": "^2.0.2",
     "redux-firestore": "^0.3.2",
@@ -35,6 +35,7 @@
     "revalidate": "^1.2.0",
     "semantic-ui-css": "2.2.14",
     "semantic-ui-react": "^0.79.0",
+    "serve": "^10.1.1",
     "yandex-map-react": "^1.1.1"
   },
   "scripts": {
@@ -42,11 +43,19 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && firebase deploy"
+    "serve": "serve",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
     "gh-pages": "^2.0.1",
     "redux-devtools-extension": "^2.13.2",
     "source-map-explorer": "^1.5.0"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

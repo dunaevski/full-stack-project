@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Container } from "semantic-ui-react"; // Добавление элемента с semantic-ui-reac
 import { Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
-import LoadingComponent from "../../app/layout/LoadingComponent";
+import LoadingComponent from "./LoadingComponent";
 import { UserIsAuthenticated } from "../../features/auth/authWrapper";
 const AsyncHomePage = Loadable({
   loader: () => import("../../features/home/HomePage"),
