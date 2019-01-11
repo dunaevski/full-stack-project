@@ -2,6 +2,7 @@
   "name": "revents",
   "version": "0.1.0",
   "private": false,
+  "homepage" : "https://dunaevski.github.io/full-stack-project",
   "dependencies": {
     "axios": "^0.18.0",
     "cuid": "^2.1.4",
