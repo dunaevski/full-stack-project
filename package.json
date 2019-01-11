@@ -2,7 +2,7 @@
   "name": "revents",
   "version": "0.1.0",
   "private": false,
-  "homepage" : "https://dunaevski.github.io/full-stack-project",
+ 
   "dependencies": {
     "axios": "^0.18.0",
     "cuid": "^2.1.4",
@@ -42,7 +42,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build && firebase deploy",
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
