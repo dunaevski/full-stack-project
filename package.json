@@ -2,7 +2,6 @@
   "name": "revents",
   "version": "0.1.0",
   "private": false,
-  "homepage": "https://dunaevski.github.io/full-stack-project",
   "dependencies": {
     "axios": "^0.18.0",
     "cuid": "^2.1.4",
@@ -35,7 +34,6 @@
     "revalidate": "^1.2.0",
     "semantic-ui-css": "2.2.14",
     "semantic-ui-react": "^0.79.0",
-    "serve": "^10.1.1",
     "yandex-map-react": "^1.1.1"
   },
   "scripts": {
@@ -43,7 +41,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "serve": "serve",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
