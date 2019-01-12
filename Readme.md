@@ -1,0 +1,1 @@
+To view app following this link https://dunaevski.github.io/full-stack-project/
