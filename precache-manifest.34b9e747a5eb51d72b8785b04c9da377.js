@@ -20,8 +20,8 @@ self.__precacheManifest = [
     "url": "/full-stack-project/static/js/3.094a5796.chunk.js"
   },
   {
-    "revision": "674f50d287a8c48dc19ba404d20fe713",
-    "url": "/full-stack-project/static/media/icons.674f50d2.eot"
+    "revision": "b06871f281fee6b241d60582ae9369b9",
+    "url": "/full-stack-project/static/media/icons.b06871f2.ttf"
   },
   {
     "revision": "69473b45e0b262db6633",
@@ -68,8 +68,8 @@ self.__precacheManifest = [
     "url": "/full-stack-project/static/js/14.fa1e1cb0.chunk.js"
   },
   {
-    "revision": "b06871f281fee6b241d60582ae9369b9",
-    "url": "/full-stack-project/static/media/icons.b06871f2.ttf"
+    "revision": "674f50d287a8c48dc19ba404d20fe713",
+    "url": "/full-stack-project/static/media/icons.674f50d2.eot"
   },
   {
     "revision": "771a4ecb108dfa8c09a4",
